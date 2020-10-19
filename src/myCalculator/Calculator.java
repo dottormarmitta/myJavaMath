@@ -28,6 +28,28 @@ public class Calculator {
 			return min;
 		}
 		
+		// Doing the same with integer numbers:
+		// - Maximum
+				public static int getMax(int[] args) {
+					int max = args[0];
+					for (int i = 1; i < args.length; i++) {
+						if (args[i] > max) {
+							max = args[i];
+						}
+					}
+					return max;
+				}
+				// - Minimum
+				public static int getMin(int[] args) {
+					int min = args[0];
+					for (int i = 1; i < args.length; i++) {
+						if (args[i] < min) {
+							min = args[i];
+						}
+					}
+					return min;
+				}
+				
 		/* next */
 		
 		// Addition
@@ -73,6 +95,16 @@ public class Calculator {
 		// Multiplication
 		public static double getProduct(double[] args) {
 			double product = 1;
+			
+			for (int i = 0; i < args.length; i++) {
+				product *= args[i];
+			}
+			return product;
+			
+		}
+		// Doing the same with integers:
+		public static int getProduct(int[] args) {
+			int product = 1;
 			
 			for (int i = 0; i < args.length; i++) {
 				product *= args[i];
@@ -178,5 +210,6 @@ public class Calculator {
 			}
 			return a_n;
 		}
+		
 		
 }
