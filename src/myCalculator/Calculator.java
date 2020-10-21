@@ -30,38 +30,42 @@ public class Calculator {
 		
 		// Doing the same with integer numbers:
 		// - Maximum
-				public static int getMax(int[] args) {
-					int max = args[0];
-					for (int i = 1; i < args.length; i++) {
-						if (args[i] > max) {
-							max = args[i];
-						}
+		public static int getMax(int[] args) {
+			int max = args[0];
+			for (int i = 1; i < args.length; i++) {
+				if (args[i] > max) {
+					max = args[i];
 					}
-					return max;
 				}
-				// - Minimum
-				public static int getMin(int[] args) {
-					int min = args[0];
-					for (int i = 1; i < args.length; i++) {
-						if (args[i] < min) {
-							min = args[i];
-						}
-					}
-					return min;
+			return max;
+		}
+		// - Minimum
+		public static int getMin(int[] args) {
+			int min = args[0];
+			for (int i = 1; i < args.length; i++) {
+				if (args[i] < min) {
+					min = args[i];
 				}
+			}
+			return min;
+		}
 				
 		/* next */
 		
 		// Addition
-		// - double
+		// - double (with compensation)
 		public static double getSum(double[] elements) {
-			double sum = 0;
+			double sum = 0.0;
+			double compensation = 0.0;
 			for (int i = 0; i < elements.length; i++) {
-				sum += elements[i];
+				double y = elements[i] - compensation;
+				double t = sum + y;
+				compensation = (t - sum) - y;
+				sum = t;
 			}
 			return sum;
 		}
-		// - Integer
+		// - Integer (no compensation needed)
 		public static int getSum(int[] elements) {
 			int sum = 0;
 			for (int i = 0; i < elements.length; i++) {
@@ -174,8 +178,41 @@ public class Calculator {
 			}
 			return power;
 		}
-		// TODO: exponent is a double!
 		
+		/*
+		 * 	Exponential function: e^x
+		 * 	TODO: Relative error (see ExpTest) is kept to the magnitude of 10^(-15)
+		 * 	however, absolute error (specified as delta) become higher and higher as
+		 * 	exponent increases!! We should improve this function, but it is not such
+		 * an easy task!
+		 */
+		public static double getExponential(double x) {
+			/*
+			 * 	We start from the fact that:
+			 * 	e^x = e^floor(x) * e^real(x)
+			 */
+			// We find e^floor(x):
+			double integerPart;
+			integerPart = getPow(Math.E, (int) (x));
+			x -= (int) (x);
+			if (x == 0) {
+				return integerPart;
+			}
+			/*
+			 * 	To find e^real(x), we recall:
+			 * 	e^real(x) = y <--> real(x) = ln(y) <--> ln(y) - real(x) = 0
+			 * 	Calling g(y) = ln(y) - real(x) --> g'(y) = 1/y
+			 * 	We seek such y using Newton tangent method
+			 */
+			double y = 1.6487212707001282; // e^0.5
+			double epsilon = 0.000000000001;
+			while (getAbs(getNatLog(y) - x) > epsilon) {
+				y = y - y*(getNatLog(y) - x);
+			}
+			return integerPart*y;
+			
+		}
+	
 		/* next */
 		
 		// Logarithm:
@@ -210,6 +247,24 @@ public class Calculator {
 			}
 			return a_n;
 		}
-		
+		// Power with long exponent
+		// - Integer exponent
+		public static double getPower(double base, long exponent) {
+			double power = 1;
+			while (exponent > 0) {
+				power *= base;
+				exponent--;
+			}
+			return power;
+		}
+		// - Long exponent
+		public static double getPow(double base, long exponent) {
+			double power = 1;
+			while (exponent > 0) {
+				power *= base;
+				exponent--;
+			}
+			return power;
+		}
 		
 }
